@@ -1,0 +1,5 @@
+1.	Response format for gas is wrong since quantity ordered is being replaced by quantity of unites left
+2.	Response for oil is wrong since price of units was wrong
+3.	It was discovered Elec was the name for electric fuel type in the orders area, unsure if this is intentional
+4.	Time Key in order not validated as time between stamping on database and running postman code to get time might be out of sync, a solution would have been to create a range of + or – a few sec from getting present date at time of running code and asserted if order time exists in range
+5.	 Included test for status and response time
