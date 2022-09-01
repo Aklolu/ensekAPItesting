@@ -1,0 +1,566 @@
+{
+	"info": {
+		"_postman_id": "478118a5-d921-43e5-a711-fafedf6c0190",
+		"name": "Ensek tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10338905"
+	},
+	"item": [
+		{
+			"name": "buy energy type gas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 700ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(700);\r",
+							"});\r",
+							"\r",
+							"    const response= pm.response.json();\r",
+							"//get the value for the key named message\r",
+							"const message=response[\"message\"];\r",
+							"console.log(message)\r",
+							"//covert string to array breaking up  \r",
+							"const messageasArray=message.split(' ');\r",
+							"\r",
+							"//get the index of the last element the order id\r",
+							"const lastElementIndex=(messageasArray.length-1);\r",
+							"// get and set the orderid as it chamges per order\r",
+							"const orderid=messageasArray[lastElementIndex].replace('.','');\r",
+							"//set the orderid as a collection variable so can be used across collection\r",
+							"pm.collectionVariables.set(\"gas_orderid\",orderid)\r",
+							"const unitsLeft=pm.variables.get(\"units_left\")-1\r",
+							"if(pm.variables.get(\"units_left\")>0){\r",
+							"pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"You have purchased 1 m³ at a cost of 0.34 there are \"+unitsLeft+\" units remaining. Your order id is \"+pm.collectionVariables.get(\"gas_orderid\")+\".\")\r",
+							"\r",
+							"});\r",
+							"\r",
+							"}\r",
+							"else{\r",
+							"    pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"There is no gas fuel to purchase!\")\r",
+							"\r",
+							"});\r",
+							"   \r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(\"https://ensekapicandidatetest.azurewebsites.net/energy\", function (err, response) {\r",
+							"    console.log(response.json());\r",
+							"    console.log(response.json());\r",
+							"    const jsonResponse=response.json();\r",
+							"   // console.log(jsonResponse[\"electric\"][\"quantity_of_units\"])\r",
+							"    const fuel_units_left=jsonResponse[\"gas\"][\"quantity_of_units\"];\r",
+							"     const fuel_price=jsonResponse[\"gas\"][\"price_per_unit\"];\r",
+							"\r",
+							"    pm.variables.set(\"units_left\",fuel_units_left);\r",
+							"    pm.variables.set(\"units_price\",fuel_price);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/buy/1/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"buy",
+						"1",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy energy type nuclear",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(\"https://ensekapicandidatetest.azurewebsites.net/energy\", function (err, response) {\r",
+							"    console.log(response.json());\r",
+							"    console.log(response.json());\r",
+							"    const jsonResponse=response.json();\r",
+							"   // console.log(jsonResponse[\"electric\"][\"quantity_of_units\"])\r",
+							"    const fuel_units_left=jsonResponse[\"nuclear\"][\"quantity_of_units\"];\r",
+							"     const fuel_price=jsonResponse[\"nuclear\"][\"price_per_unit\"];\r",
+							"\r",
+							"    pm.variables.set(\"units_left\",fuel_units_left);\r",
+							"     pm.variables.set(\"units_price\",fuel_price);\r",
+							"\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 700ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(700);\r",
+							"});\r",
+							"\r",
+							"    const response= pm.response.json();\r",
+							"//get the value for the key named message\r",
+							"const message=response[\"message\"];\r",
+							"console.log(message)\r",
+							"//covert string to array breaking up  \r",
+							"const messageasArray=message.split(' ');\r",
+							"\r",
+							"//get the index of the last element the order id\r",
+							"const lastElementIndex=(messageasArray.length-1);\r",
+							"// get and set the orderid as it chamges per order\r",
+							"const orderid=messageasArray[lastElementIndex].replace('.','');\r",
+							"//set the orderid as a collection variable so can be used across collection\r",
+							"pm.collectionVariables.set(\"nuclear_orderid\",orderid)\r",
+							"const unitsLeft=pm.variables.get(\"units_left\")-1\r",
+							"if(pm.variables.get(\"units_left\")>0){\r",
+							"pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"You have purchased 1 MW at a cost of 0.56 there are \"+unitsLeft+\" units remaining. Your order id is \"+pm.collectionVariables.get(\"nuclear_orderid\")+\".\")\r",
+							"\r",
+							"});\r",
+							"\r",
+							"}\r",
+							"else{\r",
+							"    pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"There is no nuclear fuel to purchase!\")\r",
+							"\r",
+							"});\r",
+							"   \r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/buy/2/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"buy",
+						"2",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy energy type electric",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(\"https://ensekapicandidatetest.azurewebsites.net/energy\", function (err, response) {\r",
+							"    console.log(response.json());\r",
+							"    console.log(response.json());\r",
+							"    const jsonResponse=response.json();\r",
+							"   // console.log(jsonResponse[\"electric\"][\"quantity_of_units\"])\r",
+							"    const fuel_units_left=jsonResponse[\"electric\"][\"quantity_of_units\"];\r",
+							"     const fuel_price=jsonResponse[\"electric\"][\"price_per_unit\"];\r",
+							"\r",
+							"    pm.variables.set(\"units_left\",fuel_units_left);\r",
+							"     pm.variables.set(\"units_price\",fuel_price);\r",
+							"\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 700ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(700);\r",
+							"});\r",
+							"    const response= pm.response.json();\r",
+							"//get the value for the key named message\r",
+							"const message=response[\"message\"];\r",
+							"console.log(message)\r",
+							"//covert string to array breaking up  \r",
+							"const messageasArray=message.split(' ');\r",
+							"\r",
+							"//get the index of the last element the order id\r",
+							"const lastElementIndex=(messageasArray.length-1);\r",
+							"// get and set the orderid as it chamges per order\r",
+							"const orderid=messageasArray[lastElementIndex].replace('.','');\r",
+							"//set the orderid as a collection variable so can be used across collection\r",
+							"pm.collectionVariables.set(\"electric_orderid\",orderid)\r",
+							"const unitsLeft=pm.variables.get(\"units_left\")-1\r",
+							"if(pm.variables.get(\"units_left\")>0){\r",
+							"pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"You have purchased 1 kWh at a cost of 0.47 there are \"+unitsLeft+\" units remaining. Your order id is \"+pm.collectionVariables.get(\"electric_orderid\")+\".\")\r",
+							"\r",
+							"});\r",
+							"\r",
+							"}\r",
+							"else{\r",
+							"    pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"There is no electric fuel to purchase!\")\r",
+							"\r",
+							"});\r",
+							"   \r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/buy/3/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"buy",
+						"3",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy energy type oil",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(\"https://ensekapicandidatetest.azurewebsites.net/energy\", function (err, response) {\r",
+							"    console.log(response.json());\r",
+							"    console.log(response.json());\r",
+							"    const jsonResponse=response.json();\r",
+							"   // console.log(jsonResponse[\"electric\"][\"quantity_of_units\"])\r",
+							"    const fuel_units_left=jsonResponse[\"oil\"][\"quantity_of_units\"];\r",
+							"    const fuel_price=jsonResponse[\"oil\"][\"price_per_unit\"];\r",
+							"\r",
+							"    pm.variables.set(\"units_left\",fuel_units_left);\r",
+							"     pm.variables.set(\"units_price\",fuel_price);\r",
+							"\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 700ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(700);\r",
+							"});\r",
+							"\r",
+							"    const response= pm.response.json();\r",
+							"//get the value for the key named message\r",
+							"const message=response[\"message\"];\r",
+							"console.log(message)\r",
+							"//covert string to array breaking up  \r",
+							"const messageasArray=message.split(' ');\r",
+							"\r",
+							"//get the index of the last element the order id\r",
+							"const lastElementIndex=(messageasArray.length-1);\r",
+							"// get and set the orderid as it chamges per order\r",
+							"const orderid=messageasArray[lastElementIndex].replace('.','');\r",
+							"//set the orderid as a collection variable so can be used across collection\r",
+							"pm.collectionVariables.set(\"oil_orderid\",orderid)\r",
+							"const unitsLeft=pm.variables.get(\"units_left\")-1\r",
+							"if(pm.variables.get(\"units_left\")>0){\r",
+							"pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"You have purchased 1 Litres at a cost of 0.5 there are \"+unitsLeft+\" units remaining. Your order id is \"+pm.collectionVariables.get(\"oil_orderid\")+\".\")\r",
+							"\r",
+							"});\r",
+							"\r",
+							"}\r",
+							"else{\r",
+							"    pm.test(\"Response as expected\", () =>{pm.expect(message).to.eql(\"There is no electric fuel to purchase!\")\r",
+							"\r",
+							"});\r",
+							"   \r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/buy/4/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"buy",
+						"4",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 700ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(700);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"const response= pm.response.json();\r",
+							"// iterate through array\r",
+							"  for (const element in response){\r",
+							"      //iterate through object key\r",
+							"      for (const key in response[element]){\r",
+							"          // conditional to find previously saved electric orderid variable\r",
+							"          if (response[element][key]===pm.collectionVariables.get(\"electric_orderid\")){\r",
+							"              pm.test(\"confirm fuel type and quantity matches orderid for electric\", () => {\r",
+							"\r",
+							"                  pm.expect(response[element][\"fuel\"]).to.eql(\"Elec\");\r",
+							"                  pm.expect(response[element][\"quantity\"]).to.eql(1);\r",
+							"                 pm.expect(response[element][\"time\"]).not.eql(null);\r",
+							"              \r",
+							"            \r",
+							"            });\r",
+							"              \r",
+							"               console.log(response[element])\r",
+							"          }\r",
+							"          // conditional to find previously saved gas orderid variable\r",
+							"          else if (response[element][key]===pm.collectionVariables.get(\"gas_orderid\")){\r",
+							"               pm.test(\"confirm fuel type and quantity matches orderid for gas\", () => {\r",
+							"                  pm.expect(response[element][\"fuel\"]).to.eql(\"gas\");\r",
+							"                  pm.expect(response[element][\"quantity\"]).to.eql(1);\r",
+							"                   pm.expect(response[element][\"time\"]).not.eql(null);\r",
+							"                  });\r",
+							"              console.log(response[element])\r",
+							"          }\r",
+							"          // conditional to find previously saved nuclear orderid variable\r",
+							"            else if (response[element][key]===pm.collectionVariables.get(\"nuclear_orderid\")){\r",
+							"                pm.test(\"confirm fuel type and quantity matches orderid for nuclear\", () => {\r",
+							"                  pm.expect(response[element][\"fuel\"]).to.eql(\"nuclear\");\r",
+							"                  pm.expect(response[element][\"quantity\"]).to.eql(1);\r",
+							"                   pm.expect(response[element][\"time\"]).not.eql(null);\r",
+							"                  });\r",
+							"              console.log(response[element])\r",
+							"          }\r",
+							"          // conditional to find previously saved oil orderid variable\r",
+							"            else if (response[element][key]===pm.collectionVariables.get(\"oil_orderid\")){\r",
+							"                pm.test(\"confirm fuel type and quantity matches orderid for oil\", () => {\r",
+							"                  pm.expect(response[element][\"fuel\"]).to.eql(\"Oil\");\r",
+							"                  pm.expect(response[element][\"quantity\"]).to.eql(1);\r",
+							"                   pm.expect(response[element][\"time\"]).not.eql(null);\r",
+							"                  });\r",
+							"              console.log(response[element])\r",
+							"          }\r",
+							"          \r",
+							"          \r",
+							"          \r",
+							"      }\r",
+							"\r",
+							"  }\r",
+							"      \r",
+							"    \r",
+							"  "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://ensekapicandidatetest.azurewebsites.net/orders",
+					"protocol": "https",
+					"host": [
+						"ensekapicandidatetest",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm there are only 2 orders for Feb 2022",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 700ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(700);\r",
+							"});\r",
+							"\r",
+							"  const response= pm.response.json();\r",
+							"  let count=0;\r",
+							"  for (const element in response){\r",
+							"     \r",
+							"          if( response[element][\"time\"].includes(\"Feb 2022\")){\r",
+							"              count++\r",
+							"              \r",
+							"        \r",
+							"\r",
+							"      }\r",
+							"      }\r",
+							"  console.log(count);\r",
+							"  pm.test(\"Number of orders in Feb 2022\", () => {\r",
+							"  \r",
+							"  pm.expect(count).to.eql(2);\r",
+							"  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://ensekapicandidatetest.azurewebsites.net/orders",
+					"protocol": "https",
+					"host": [
+						"ensekapicandidatetest",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://ensekapicandidatetest.azurewebsites.net",
+			"type": "string"
+		},
+		{
+			"key": "orderid",
+			"value": ""
+		},
+		{
+			"key": "nuclear_orderid",
+			"value": ""
+		},
+		{
+			"key": "gas_orderid",
+			"value": ""
+		},
+		{
+			"key": "electric_orderid",
+			"value": ""
+		},
+		{
+			"key": "oil_orderid",
+			"value": ""
+		}
+	]
+}
